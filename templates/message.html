@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Message Scanner | PhishGuard AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #060a12;
+            --panel: #0d1422;
+            --panel-2: #111a2b;
+            --border: #1d2a40;
+            --text: #edf4ff;
+            --muted: #8da0bb;
+            --blue: #38bdf8;
+            --purple: #8b5cf6;
+            --green: #22c55e;
+            --yellow: #facc15;
+            --orange: #f97316;
+            --red: #ef4444;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at 15% 0%,
+                    rgba(56, 189, 248, 0.08),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 85% 10%,
+                    rgba(139, 92, 246, 0.07),
+                    transparent 30%
+                ),
+                var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .navbar {
+            height: 68px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: rgba(6,10,18,0.92);
+            backdrop-filter: blur(18px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-container {
+            width: min(1180px, 92%);
+            height: 100%;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: linear-gradient(
+                135deg,
+                rgba(56,189,248,0.20),
+                rgba(139,92,246,0.20)
+            );
+            border: 1px solid rgba(56,189,248,0.25);
+            font-size: 19px;
+        }
+
+        .brand-text span {
+            color: var(--blue);
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 2px;
+            color: #62748e;
+            font-size: 8px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .nav-links a {
+            padding: 9px 12px;
+            border-radius: 9px;
+            color: #9eacc1;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .nav-links a.active {
+            color: #ffffff;
+            background: #182235;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+        }
+
+        .container {
+            width: min(900px, 92%);
+            margin: 0 auto;
+            padding: 48px 0 60px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 12px;
+            border: 1px solid rgba(56,189,248,0.18);
+            background: rgba(56,189,248,0.07);
+            border-radius: 999px;
+            color: #67d5ff;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            font-size: clamp(30px, 5vw, 46px);
+            line-height: 1.08;
+            letter-spacing: -1.8px;
+            margin-bottom: 13px;
+        }
+
+        .hero h1 span {
+            color: var(--blue);
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: auto;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .scanner-card,
+        .result-card,
+        .url-analysis-card,
+        .info-card {
+            background: rgba(13,20,34,0.88);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 18px 60px rgba(0,0,0,0.20);
+        }
+
+        .scanner-card {
+            padding: 24px;
+            margin-bottom: 22px;
+        }
+
+        .scanner-label {
+            display: block;
+            color: #dbe8f8;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .scanner-description {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 145px;
+            resize: vertical;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #263650;
+            background: #080e19;
+            color: #eaf2ff;
+            outline: none;
+            font: inherit;
+            font-size: 13px;
+            line-height: 1.65;
+            transition: 0.2s ease;
+        }
+
+        textarea::placeholder {
+            color: #53647c;
+        }
+
+        textarea:focus {
+            border-color: rgba(56,189,248,0.65);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.08);
+        }
+
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 13px;
+        }
+
+        .input-note {
+            color: #61738d;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .scan-button {
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 20px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(37,99,235,0.22);
+            transition: 0.2s ease;
+        }
+
+        .scan-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 30px rgba(37,99,235,0.30);
+        }
+
+        .error {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #fca5a5;
+            font-size: 12px;
+        }
+
+        .result-card {
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+
+        .result-header {
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(239,68,68,0.10);
+            border: 1px solid rgba(239,68,68,0.20);
+            font-size: 23px;
+            margin-bottom: 13px;
+        }
+
+        .result-icon.safe {
+            background: rgba(34,197,94,0.10);
+            border-color: rgba(34,197,94,0.20);
+        }
+
+        .result-title {
+            font-size: 23px;
+            letter-spacing: -0.6px;
+            margin-bottom: 6px;
+        }
+
+        .result-subtitle {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .threat-badge {
+            flex-shrink: 0;
+            padding: 9px 13px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            background: rgba(239,68,68,0.10);
+            color: #ff8b8b;
+            border: 1px solid rgba(239,68,68,0.25);
+        }
+
+        .threat-badge.medium {
+            background: rgba(249,115,22,0.10);
+            color: #fdba74;
+            border-color: rgba(249,115,22,0.25);
+        }
+
+        .threat-badge.low {
+            background: rgba(250,204,21,0.08);
+            color: #fde047;
+            border-color: rgba(250,204,21,0.20);
+        }
+
+        .threat-badge.safe {
+            background: rgba(34,197,94,0.09);
+            color: #86efac;
+            border-color: rgba(34,197,94,0.20);
+        }
+
+        .result-body {
+            padding: 24px;
+        }
+
+        .section-label {
+            color: #71839e;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+            margin-bottom: 9px;
+        }
+
+        .message-preview {
+            padding: 16px;
+            background: #080e19;
+            border: 1px solid #1b2940;
+            border-radius: 12px;
+            color: #dce7f7;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .risk-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 14px;
+            background: linear-gradient(
+                135deg,
+                rgba(15,23,42,0.95),
+                rgba(12,20,34,0.95)
+            );
+            border: 1px solid #22314a;
+        }
+
+        .risk-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .risk-label {
+            color: #9cafc7;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .risk-number {
+            font-size: 27px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .progress {
+            height: 8px;
+            background: #172237;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #22c55e, #facc15, #ef4444);
+        }
+
+        .risk-caption {
+            margin-top: 11px;
+            color: #7f92ad;
+            font-size: 11px;
+        }
+
+        .why-box,
+        .recommendation {
+            margin-top: 18px;
+            padding: 17px;
+            border-radius: 13px;
+            border: 1px solid #1e2d45;
+            background: rgba(255,255,255,0.018);
+        }
+
+        .why-box h3,
+        .recommendation h3 {
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .why-box p,
+        .recommendation p {
+            color: #899bb4;
+            font-size: 12px;
+            line-height: 1.65;
+        }
+
+        .recommendation.warning {
+            background: rgba(239,68,68,0.055);
+            border-color: rgba(239,68,68,0.18);
+        }
+
+        .url-analysis-card {
+            margin: 22px 0;
+            padding: 20px;
+        }
+
+        .url-analysis-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .url-analysis-title h3 {
+            font-size: 15px;
+            letter-spacing: -0.2px;
+        }
+
+        .url-count {
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(56,189,248,0.08);
+            border: 1px solid rgba(56,189,248,0.16);
+            color: #67d5ff;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .embedded-url {
+            padding: 17px;
+            border: 1px solid #20304a;
+            border-radius: 13px;
+            background: #080e19;
+        }
+
+        .embedded-url + .embedded-url {
+            margin-top: 12px;
+        }
+
+        .embedded-url-value {
+            color: #9ddfff;
+            font-family:
+                "Cascadia Code",
+                "Consolas",
+                monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+            margin-bottom: 13px;
+        }
+
+        .url-risk-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 13px;
+        }
+
+        .url-risk-score {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .url-threat {
+            padding: 6px 9px;
+            border-radius: 7px;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+        }
+
+        .url-threat.high {
+            color: #fca5a5;
+            background: rgba(239,68,68,0.10);
+            border: 1px solid rgba(239,68,68,0.20);
+        }
+
+        .url-threat.medium {
+            color: #fdba74;
+            background: rgba(249,115,22,0.10);
+            border: 1px solid rgba(249,115,22,0.20);
+        }
+
+        .url-threat.low {
+            color: #fde047;
+            background: rgba(250,204,21,0.08);
+            border: 1px solid rgba(250,204,21,0.18);
+        }
+
+        .url-threat.safe {
+            color: #86efac;
+            background: rgba(34,197,94,0.08);
+            border: 1px solid rgba(34,197,94,0.18);
+        }
+
+        .url-indicators {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 13px;
+        }
+
+        .indicator {
+            padding: 5px 8px;
+            border-radius: 7px;
+            background: rgba(34,197,94,0.06);
+            border: 1px solid rgba(34,197,94,0.15);
+            color: #86efac;
+            font-size: 10px;
+        }
+
+        .indicator.warning {
+            background: rgba(249,115,22,0.07);
+            border-color: rgba(249,115,22,0.18);
+            color: #fdba74;
+        }
+
+        .url-reasons {
+            margin: 0 0 15px 17px;
+            color: #8ea1bb;
+            font-size: 11px;
+            line-height: 1.65;
+        }
+
+        .url-model-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .url-model-stat {
+            padding: 11px;
+            border-radius: 9px;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid #1b2940;
+        }
+
+        .url-model-stat span {
+            display: block;
+            color: #63758e;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 5px;
+        }
+
+        .url-model-stat strong {
+            font-size: 15px;
+            color: #dce8f8;
+        }
+
+        details {
+            margin-top: 18px;
+            border: 1px solid #1d2b43;
+            border-radius: 13px;
+            overflow: hidden;
+        }
+
+        summary {
+            cursor: pointer;
+            padding: 15px 17px;
+            color: #c8d6e8;
+            font-size: 12px;
+            font-weight: 700;
+            user-select: none;
+        }
+
+        summary:hover {
+            background: rgba(255,255,255,0.025);
+        }
+
+        .technical-content {
+            padding: 0 17px 17px;
+            border-top: 1px solid #1b2940;
+        }
+
+        .technical-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 9px;
+            padding-top: 15px;
+        }
+
+        .technical-item {
+            padding: 12px;
+            border-radius: 10px;
+            background: #080e19;
+            border: 1px solid #1b2940;
+        }
+
+        .technical-item span {
+            display: block;
+            color: #63758e;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+        }
+
+        .technical-item strong {
+            color: #dce8f8;
+            font-size: 11px;
+        }
+
+        .technical-note {
+            margin-top: 12px;
+            padding: 13px;
+            border-radius: 10px;
+            background: rgba(56,189,248,0.045);
+            border: 1px solid rgba(56,189,248,0.10);
+            color: #7f95b0;
+            font-size: 11px;
+            line-height: 1.65;
+        }
+
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 17px;
+        }
+
+        .pipeline-item {
+            padding: 9px 11px;
+            border-radius: 8px;
+            background: #0b1423;
+            border: 1px solid #20304a;
+            color: #b8c8dc;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .arrow {
+            color: #526780;
+            font-size: 13px;
+        }
+
+        .info-card {
+            padding: 22px;
+            margin-top: 22px;
+        }
+
+        .info-card h3 {
+            font-size: 15px;
+            margin-bottom: 9px;
+        }
+
+        .info-card > p {
+            color: #8497b1;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .footer {
+            text-align: center;
+            color: #45566e;
+            font-size: 10px;
+            padding-top: 30px;
+        }
+
+        @media (max-width: 760px) {
+            .navbar {
+                height: auto;
+            }
+
+            .nav-container {
+                padding: 12px 0;
+                flex-direction: column;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .container {
+                padding-top: 30px;
+            }
+
+            .result-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .technical-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .input-footer {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .scan-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 94%;
+            }
+
+            .scanner-card,
+            .result-body,
+            .result-header,
+            .url-analysis-card,
+            .info-card {
+                padding: 17px;
+            }
+
+            .technical-grid,
+            .url-model-row {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 31px;
+            }
+
+            .nav-links a {
+                font-size: 11px;
+                padding: 8px 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+
+        <a href="/" class="brand">
+            <div class="brand-icon">🛡️</div>
+
+            <div class="brand-text">
+                PhishGuard <span>AI</span>
+                <span class="brand-subtitle">
+                    SECURITY INTELLIGENCE
+                </span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+
+            <a href="/">
+                🔗 URL Scanner
+            </a>
+
+            <a href="/message" class="active">
+                💬 Message Scanner
+            </a>
+
+            <a href="/history">
+                📋 History
+            </a>
+
+            <a href="/dashboard">
+                📊 Dashboard
+            </a>
+
+        </div>
+    </div>
+</nav>
+
+
+<main class="container">
+
+    <section class="hero">
+
+        <div class="hero-badge">
+            💬 AI MESSAGE PROTECTION
+        </div>
+
+        <h1>
+            Check a
+            <span>Suspicious Message</span>
+        </h1>
+
+        <p>
+            Paste an SMS or message below and PhishGuard AI
+            will analyze it for scam patterns and suspicious
+            links using machine learning and security rules.
+        </p>
+
+    </section>
+
+
+    <section class="scanner-card">
+
+        <form method="POST" action="/message">
+
+            <label class="scanner-label" for="message">
+                Paste your message
+            </label>
+
+            <p class="scanner-description">
+                Don't click links or share personal information
+                while checking a suspicious message.
+            </p>
+
+            <textarea
+                id="message"
+                name="message"
+                placeholder="Example: Your account has been suspended. Verify now..."
+                autocomplete="off"
+                required
+            >{{ message or '' }}</textarea>
+
+            <div class="input-footer">
+
+                <div class="input-note">
+                    PhishGuard AI analyzes message content and
+                    detects URLs embedded inside the message.
+                </div>
+
+                <button
+                    type="submit"
+                    class="scan-button"
+                >
+                    Analyze Message
+                </button>
+
+            </div>
+
+        </form>
+
+
+        {% if validation_error %}
+
+        <div class="error">
+            ⚠️ {{ validation_error }}
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    {% if result %}
+
+    <section class="result-card">
+
+        <div class="result-header">
+
+            <div>
+
+                {% if threat_level in ["HIGH", "MEDIUM"] %}
+                <div class="result-icon">
+                    🚨
+                </div>
+                {% else %}
+                <div class="result-icon safe">
+                    🛡️
+                </div>
+                {% endif %}
+
+                <h2 class="result-title">
+                    {{ result }}
+                </h2>
+
+                <p class="result-subtitle">
+                    Risk level:
+                    <strong>{{ threat_level }}</strong>
+                </p>
+
+            </div>
+
+
+            <div
+                class="threat-badge
+                {% if threat_level == 'MEDIUM' %}
+                    medium
+                {% elif threat_level == 'LOW' %}
+                    low
+                {% elif threat_level == 'SAFE' %}
+                    safe
+                {% endif %}"
+            >
+                {{ threat_level }} RISK
+            </div>
+
+        </div>
+
+
+        <div class="result-body">
+
+            <div class="section-label">
+                Analyzed Message
+            </div>
+
+            <div class="message-preview">
+                {{ message }}
+            </div>
+
+
+            {% if embedded_urls %}
+
+            <section class="url-analysis-card">
+
+                <div class="url-analysis-title">
+
+                    <h3>
+                        🔗 URL Detected in Message
+                    </h3>
+
+                    <span class="url-count">
+                        {{ embedded_urls|length }}
+                        URL{% if embedded_urls|length != 1 %}s{% endif %}
+                    </span>
+
+                </div>
+
+
+                {% for item in embedded_urls %}
+
+                <div class="embedded-url">
+
+                    <div class="embedded-url-value">
+                        {{ item.url }}
+                    </div>
+
+
+                    <div class="url-risk-row">
+
+                        <span class="url-risk-score">
+                            {{ "%.2f"|format(item.risk_score|float) }}%
+                        </span>
+
+
+                        <span
+                            class="url-threat
+                            {% if item.threat_level == 'MEDIUM' %}
+                                medium
+                            {% elif item.threat_level == 'LOW' %}
+                                low
+                            {% elif item.threat_level == 'SAFE' %}
+                                safe
+                            {% else %}
+                                high
+                            {% endif %}"
+                        >
+                            {{ item.threat_level }} RISK
+                        </span>
+
+                    </div>
+
+
+                    <div class="url-indicators">
+
+                        {% if item.is_domain_ip == 1 %}
+
+                        <span class="indicator warning">
+                            ⚠️ IP-based domain
+                        </span>
+
+                        {% endif %}
+
+
+                        {% if item.https == 0 %}
+
+                        <span class="indicator warning">
+                            ⚠️ No HTTPS
+                        </span>
+
+                        {% else %}
+
+                        <span class="indicator">
+                            🔒 HTTPS
+                        </span>
+
+                        {% endif %}
+
+
+                        {% if item.suspicious_words > 0 %}
+
+                        <span class="indicator warning">
+                            ⚠️
+                            {{ item.suspicious_words }}
+                            suspicious keyword{% if item.suspicious_words != 1 %}s{% endif %}
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if item.reasons %}
+
+                    <ul class="url-reasons">
+
+                        {% for reason in item.reasons %}
+
+                        <li>
+                            {{ reason }}
+                        </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                    {% endif %}
+
+
+                    <div class="url-model-row">
+
+                        <div class="url-model-stat">
+
+                            <span>
+                                URL ML Risk
+                            </span>
+
+                            <strong>
+                                {{ "%.2f"|format(item.ml_risk|float) }}%
+                            </strong>
+
+                        </div>
+
+
+                        <div class="url-model-stat">
+
+                            <span>
+                                Security Rule Risk
+                            </span>
+
+                            <strong>
+                                {{ "%.2f"|format(item.rule_risk|float) }}%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </section>
+
+            {% endif %}
+
+
+            <div class="risk-box">
+
+                <div class="risk-top">
+
+                    <span class="risk-label">
+                        Overall Risk
+                    </span>
+
+                    <span class="risk-number">
+                        {{ "%.2f"|format(risk_score|float) }}%
+                    </span>
+
+                </div>
+
+
+                <div class="progress">
+
+                    <div
+                        class="progress-bar"
+                        style="width: {{ risk_score|float }}%;"
+                    ></div>
+
+                </div>
+
+
+                {% if risk_score|float < 20 %}
+
+                <div class="risk-caption">
+                    This message looks similar to normal,
+                    legitimate communication.
+                </div>
+
+                {% elif risk_score|float < 50 %}
+
+                <div class="risk-caption">
+                    Some parts of this message deserve
+                    extra attention.
+                </div>
+
+                {% elif risk_score|float < 80 %}
+
+                <div class="risk-caption">
+                    This message contains patterns often
+                    seen in suspicious messages.
+                </div>
+
+                {% else %}
+
+                <div class="risk-caption">
+                    This message strongly resembles
+                    scam or spam activity.
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="why-box">
+
+                {% if threat_level in ["HIGH", "MEDIUM"] %}
+
+                <h3>
+                    ⚠️ Why is this message suspicious?
+                </h3>
+
+                <p>
+                    The AI found patterns commonly associated
+                    with scam or spam messages. Be careful with
+                    unexpected offers, urgent requests, unknown
+                    senders, and suspicious links.
+                </p>
+
+                {% else %}
+
+                <h3>
+                    🛡️ Why does this message look safe?
+                </h3>
+
+                <p>
+                    The AI did not find strong patterns commonly
+                    associated with scam or spam messages.
+                    Still, remain careful with unexpected links
+                    and requests.
+                </p>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if threat_level in ["HIGH", "MEDIUM"] %}
+
+            <div class="recommendation warning">
+
+                <h3>
+                    🚨 What should you do?
+                </h3>
+
+                <p>
+                    Don't click links, reply, send money, or share
+                    OTPs, passwords, bank details, or other sensitive
+                    information unless you independently verify
+                    the sender.
+                </p>
+
+            </div>
+
+            {% else %}
+
+            <div class="recommendation">
+
+                <h3>
+                    ✅ What should you do?
+                </h3>
+
+                <p>
+                    No strong scam pattern was detected. Still,
+                    be cautious with unexpected links, payment
+                    requests, and personal-information requests.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+            <details>
+
+                <summary>
+                    ⚙️ How did PhishGuard AI decide?
+                </summary>
+
+                <div class="technical-content">
+
+                    <div class="technical-grid">
+
+                        <div class="technical-item">
+
+                            <span>
+                                AI Model
+                            </span>
+
+                            <strong>
+                                Logistic Regression
+                            </strong>
+
+                        </div>
+
+
+                        <div class="technical-item">
+
+                            <span>
+                                Text Processing
+                            </span>
+
+                            <strong>
+                                TF-IDF
+                            </strong>
+
+                        </div>
+
+
+                        <div class="technical-item">
+
+                            <span>
+                                N-grams
+                            </span>
+
+                            <strong>
+                                1–2
+                            </strong>
+
+                        </div>
+
+
+                        <div class="technical-item">
+
+                            <span>
+                                Final Risk
+                            </span>
+
+                            <strong>
+                                {{ "%.2f"|format(risk_score|float) }}%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="technical-note">
+
+                        The message is converted into numerical
+                        text features using TF-IDF. The trained
+                        Logistic Regression model estimates how
+                        closely the message resembles the scam/spam
+                        class.
+
+                        {% if embedded_urls %}
+
+                        Each detected URL is additionally analyzed
+                        using the URL machine-learning model and
+                        security rules. The strongest detected risk
+                        contributes to the final message risk score.
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </details>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <section class="info-card">
+
+        <h3>
+            🧠 How Message Detection Works
+        </h3>
+
+        <p>
+            PhishGuard AI converts the message into numerical
+            text features using TF-IDF. These features are
+            analyzed by a Logistic Regression classifier to
+            estimate whether the message resembles the spam/scam
+            category.
+        </p>
+
+
+        <div class="pipeline">
+
+            <div class="pipeline-item">
+                💬 Message
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="pipeline-item">
+                🧹 Text Processing
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="pipeline-item">
+                🔢 TF-IDF
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="pipeline-item">
+                🧠 Logistic Regression
+            </div>
+
+            <div class="arrow">
+                →
+            </div>
+
+            <div class="pipeline-item">
+                🛡️ Risk Score
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <div class="footer">
+        PhishGuard AI • AI + Cybersecurity + NLP
+    </div>
+
+</main>
+
+</body>
+</html>

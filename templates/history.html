@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Scan History | PhishGuard AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #172554 0,
+                    #0f172a 35%,
+                    #020617 75%
+                );
+
+            color: #e5e7eb;
+
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        header {
+            width: 100%;
+
+            background:
+                rgba(2,6,23,0.82);
+
+            border-bottom:
+                1px solid rgba(148,163,184,0.15);
+
+            backdrop-filter: blur(16px);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+        }
+
+
+        .header-container {
+            max-width: 1180px;
+
+            margin: auto;
+
+            padding: 14px 24px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .logo {
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            text-decoration: none;
+
+            color: white;
+
+            white-space: nowrap;
+        }
+
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #7c3aed
+                );
+
+            font-size: 18px;
+        }
+
+
+        .logo h1 {
+            font-size: 20px;
+
+            font-weight: 800;
+        }
+
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+
+        nav {
+            display: flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            flex-wrap: wrap;
+
+            justify-content: flex-end;
+        }
+
+
+        nav a {
+            text-decoration: none;
+
+            color: #94a3b8;
+
+            padding: 10px 13px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+
+            font-weight: 650;
+
+            transition: 0.2s;
+        }
+
+
+        nav a:hover,
+        nav a.active {
+            color: white;
+
+            background:
+                rgba(59,130,246,0.14);
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        main {
+            width: 92%;
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding:
+                42px 0 55px;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            text-align: center;
+
+            margin-bottom: 28px;
+        }
+
+
+        .hero-badge {
+            display: inline-block;
+
+            padding: 6px 13px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(59,130,246,0.12);
+
+            border:
+                1px solid rgba(96,165,250,0.22);
+
+            color: #93c5fd;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.7px;
+
+            margin-bottom: 13px;
+        }
+
+
+        .hero h2 {
+            color: white;
+
+            font-size:
+                clamp(30px, 5vw, 40px);
+
+            line-height: 1.1;
+
+            letter-spacing: -1px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .hero p {
+            color: #94a3b8;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            max-width: 650px;
+
+            margin: auto;
+        }
+
+
+        /* =====================================================
+           STATS
+        ===================================================== */
+
+        .history-stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .stat-card {
+            background:
+                rgba(15,23,42,0.72);
+
+            border:
+                1px solid rgba(148,163,184,0.14);
+
+            border-radius: 15px;
+
+            padding: 16px 17px;
+
+            backdrop-filter: blur(12px);
+        }
+
+
+        .stat-label {
+            color: #64748b;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            margin-bottom: 6px;
+        }
+
+
+        .stat-number {
+            color: white;
+
+            font-size: 23px;
+
+            font-weight: 850;
+        }
+
+
+        /* =====================================================
+           CONTROL PANEL
+        ===================================================== */
+
+        .control-card {
+            background:
+                rgba(15,23,42,0.72);
+
+            border:
+                1px solid rgba(148,163,184,0.14);
+
+            border-radius: 17px;
+
+            padding: 17px;
+
+            margin-bottom: 15px;
+
+            backdrop-filter: blur(12px);
+        }
+
+
+        .controls {
+            display: flex;
+
+            gap: 10px;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+        }
+
+
+        .search-box {
+            position: relative;
+
+            flex: 1;
+
+            min-width: 250px;
+        }
+
+
+        .search-box span {
+            position: absolute;
+
+            left: 13px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            color: #64748b;
+
+            font-size: 15px;
+
+            pointer-events: none;
+        }
+
+
+        .search-input {
+            width: 100%;
+
+            padding:
+                12px 14px 12px 38px;
+
+            border-radius: 10px;
+
+            border:
+                1px solid #334155;
+
+            background:
+                #020617;
+
+            color: #f8fafc;
+
+            outline: none;
+
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+
+        .search-input::placeholder {
+            color: #475569;
+        }
+
+
+        .search-input:focus {
+            border-color: #3b82f6;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(59,130,246,0.10);
+        }
+
+
+        .filter-group {
+            display: flex;
+
+            gap: 6px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .filter-btn {
+            border:
+                1px solid #334155;
+
+            background:
+                #0f172a;
+
+            color: #94a3b8;
+
+            padding:
+                10px 12px;
+
+            border-radius: 9px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .filter-btn:hover {
+            color: white;
+
+            border-color: #475569;
+        }
+
+
+        .filter-btn.active {
+            background:
+                rgba(37,99,235,0.18);
+
+            border-color:
+                rgba(59,130,246,0.45);
+
+            color: #93c5fd;
+        }
+
+
+        .filter-btn[data-filter="HIGH"].active {
+            background:
+                rgba(239,68,68,0.12);
+
+            border-color:
+                rgba(239,68,68,0.35);
+
+            color: #fca5a5;
+        }
+
+
+        .filter-btn[data-filter="MEDIUM"].active {
+            background:
+                rgba(245,158,11,0.12);
+
+            border-color:
+                rgba(245,158,11,0.35);
+
+            color: #fcd34d;
+        }
+
+
+        .filter-btn[data-filter="LOW"].active {
+            background:
+                rgba(234,179,8,0.12);
+
+            border-color:
+                rgba(234,179,8,0.35);
+
+            color: #fde047;
+        }
+
+
+        .filter-btn[data-filter="SAFE"].active {
+            background:
+                rgba(34,197,94,0.12);
+
+            border-color:
+                rgba(34,197,94,0.35);
+
+            color: #86efac;
+        }
+
+
+        /* =====================================================
+           RESULTS INFO
+        ===================================================== */
+
+        .results-info {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin:
+                0 2px 10px;
+
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+
+        .results-info strong {
+            color: #cbd5e1;
+        }
+
+
+        /* =====================================================
+           TABLE CARD
+        ===================================================== */
+
+        .history-card {
+            background:
+                rgba(15,23,42,0.72);
+
+            border:
+                1px solid rgba(148,163,184,0.14);
+
+            border-radius: 17px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 20px 60px
+                rgba(0,0,0,0.22);
+        }
+
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 900px;
+        }
+
+
+        thead {
+            background:
+                rgba(2,6,23,0.65);
+        }
+
+
+        th {
+            text-align: left;
+
+            padding:
+                14px 15px;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.6px;
+
+            border-bottom:
+                1px solid rgba(148,163,184,0.12);
+        }
+
+
+        td {
+            padding:
+                15px;
+
+            border-bottom:
+                1px solid rgba(148,163,184,0.08);
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+
+            vertical-align: middle;
+        }
+
+
+        tbody tr {
+            transition: 0.15s;
+        }
+
+
+        tbody tr:hover {
+            background:
+                rgba(30,41,59,0.42);
+        }
+
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        /* =====================================================
+           TYPE
+        ===================================================== */
+
+        .type-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            padding:
+                6px 9px;
+
+            border-radius: 7px;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.3px;
+        }
+
+
+        .url-type {
+            background:
+                rgba(37,99,235,0.12);
+
+            color: #60a5fa;
+
+            border:
+                1px solid
+                rgba(59,130,246,0.15);
+        }
+
+
+        .message-type {
+            background:
+                rgba(124,58,237,0.12);
+
+            color: #c4b5fd;
+
+            border:
+                1px solid
+                rgba(124,58,237,0.15);
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .content-cell {
+            max-width: 420px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            color: #f1f5f9;
+
+            font-size: 13px;
+        }
+
+
+        .content-cell:hover {
+            color: #93c5fd;
+        }
+
+
+        /* =====================================================
+           RESULT
+        ===================================================== */
+
+        .result {
+            font-weight: 750;
+
+            white-space: nowrap;
+        }
+
+
+        .phishing {
+            color: #f87171;
+        }
+
+
+        .suspicious {
+            color: #fbbf24;
+        }
+
+
+        .safe {
+            color: #34d399;
+        }
+
+
+        /* =====================================================
+           RISK
+        ===================================================== */
+
+        .risk-wrapper {
+            min-width: 100px;
+        }
+
+
+        .risk-value {
+            display: block;
+
+            color: white;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            margin-bottom: 5px;
+        }
+
+
+        .risk-mini-bar {
+            width: 75px;
+
+            height: 4px;
+
+            background: #1e293b;
+
+            border-radius: 99px;
+
+            overflow: hidden;
+        }
+
+
+        .risk-mini-fill {
+            height: 100%;
+
+            border-radius: inherit;
+        }
+
+
+        .risk-high {
+            background: #ef4444;
+        }
+
+
+        .risk-medium {
+            background: #f59e0b;
+        }
+
+
+        .risk-low {
+            background: #eab308;
+        }
+
+
+        .risk-safe {
+            background: #22c55e;
+        }
+
+
+        /* =====================================================
+           THREAT BADGES
+        ===================================================== */
+
+        .threat-badge {
+            display: inline-block;
+
+            padding:
+                6px 10px;
+
+            border-radius: 999px;
+
+            font-size: 10px;
+
+            font-weight: 850;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        .high {
+            background:
+                rgba(239,68,68,0.12);
+
+            color: #fca5a5;
+
+            border:
+                1px solid
+                rgba(239,68,68,0.22);
+        }
+
+
+        .medium {
+            background:
+                rgba(245,158,11,0.12);
+
+            color: #fcd34d;
+
+            border:
+                1px solid
+                rgba(245,158,11,0.22);
+        }
+
+
+        .low {
+            background:
+                rgba(234,179,8,0.12);
+
+            color: #fde047;
+
+            border:
+                1px solid
+                rgba(234,179,8,0.22);
+        }
+
+
+        .safe-level {
+            background:
+                rgba(34,197,94,0.12);
+
+            color: #86efac;
+
+            border:
+                1px solid
+                rgba(34,197,94,0.22);
+        }
+
+
+        /* =====================================================
+           DATE
+        ===================================================== */
+
+        .date-cell {
+            color: #64748b;
+
+            white-space: nowrap;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           NO RESULTS
+        ===================================================== */
+
+        .no-results {
+            display: none;
+
+            text-align: center;
+
+            padding: 65px 20px;
+        }
+
+
+        .no-results-icon {
+            width: 55px;
+            height: 55px;
+
+            margin:
+                0 auto 15px;
+
+            border-radius: 16px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(59,130,246,0.08);
+
+            border:
+                1px solid
+                rgba(59,130,246,0.13);
+
+            font-size: 25px;
+        }
+
+
+        .no-results h3 {
+            color: white;
+
+            font-size: 18px;
+
+            margin-bottom: 7px;
+        }
+
+
+        .no-results p {
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           EMPTY DATABASE
+        ===================================================== */
+
+        .empty-state {
+            text-align: center;
+
+            padding: 70px 20px;
+        }
+
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+
+            margin:
+                0 auto 17px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 18px;
+
+            background:
+                rgba(59,130,246,0.08);
+
+            border:
+                1px solid
+                rgba(59,130,246,0.14);
+
+            font-size: 28px;
+        }
+
+
+        .empty-state h3 {
+            color: white;
+
+            font-size: 20px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .empty-state p {
+            color: #64748b;
+
+            font-size: 13px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .scan-buttons {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 9px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .scan-button {
+            display: inline-block;
+
+            text-decoration: none;
+
+            padding:
+                11px 17px;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #7c3aed
+                );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 750;
+
+            transition: 0.2s;
+        }
+
+
+        .scan-button:hover {
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 8px 25px
+                rgba(37,99,235,0.25);
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            text-align: center;
+
+            color: #475569;
+
+            font-size: 11px;
+
+            padding:
+                0 20px 30px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .history-stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .header-container {
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            nav {
+                justify-content: center;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            main {
+                width: 94%;
+
+                padding-top: 30px;
+            }
+
+            .history-stats {
+                grid-template-columns: 1fr 1fr;
+
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 13px;
+            }
+
+            .stat-number {
+                font-size: 19px;
+            }
+
+            .controls {
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-btn {
+                flex: 1;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            .history-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                justify-content: center;
+            }
+
+            nav a {
+                padding:
+                    8px 9px;
+
+                font-size: 11px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header>
+
+    <div class="header-container">
+
+
+        <a href="/" class="logo">
+
+            <div class="logo-icon">
+                🛡️
+            </div>
+
+            <h1>
+                PhishGuard <span>AI</span>
+            </h1>
+
+        </a>
+
+
+        <nav>
+
+            <a href="/">
+                🔗 URL Scanner
+            </a>
+
+            <a href="/message">
+                💬 Message Scanner
+            </a>
+
+            <a href="/history"
+               class="active">
+                📋 History
+            </a>
+
+            <a href="/dashboard">
+                📊 Dashboard
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main>
+
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-badge">
+            SECURITY ACTIVITY
+        </div>
+
+        <h2>
+            Scan History
+        </h2>
+
+        <p>
+            Review URLs and scam messages previously analyzed
+            by PhishGuard AI.
+        </p>
+
+    </section>
+
+
+
+    {% if scans %}
+
+
+    <!-- =====================================================
+         STATISTICS
+    ===================================================== -->
+
+    <section class="history-stats">
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Total Scans
+            </div>
+
+            <div class="stat-number"
+                 id="totalCount">
+                {{ scans|length }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                URL Scans
+            </div>
+
+            <div class="stat-number"
+                 id="urlCount">
+
+                {{ scans
+                   |selectattr("scan_type", "equalto", "URL")
+                   |list
+                   |length }}
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Message Scans
+            </div>
+
+            <div class="stat-number"
+                 id="messageCount">
+
+                {{ scans
+                   |selectattr("scan_type", "equalto", "MESSAGE")
+                   |list
+                   |length }}
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-label">
+                Threats Detected
+            </div>
+
+            <div class="stat-number">
+
+                {{ scans
+                   |selectattr("threat_level", "in", ["HIGH", "MEDIUM"])
+                   |list
+                   |length }}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SEARCH + FILTERS
+    ===================================================== -->
+
+    <section class="control-card">
+
+        <div class="controls">
+
+
+            <div class="search-box">
+
+                <span>
+                    🔎
+                </span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="Search URLs or messages..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="filter-group">
+
+                <button
+                    type="button"
+                    class="filter-btn active"
+                    data-filter="ALL">
+                    All
+                </button>
+
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-filter="URL">
+                    🔗 URL
+                </button>
+
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-filter="MESSAGE">
+                    💬 Message
+                </button>
+
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-filter="HIGH">
+                    High
+                </button>
+
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-filter="MEDIUM">
+                    Medium
+                </button>
+
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-filter="LOW">
+                    Low
+                </button>
+
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-filter="SAFE">
+                    Safe
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         RESULTS COUNT
+    ===================================================== -->
+
+    <div class="results-info">
+
+        <span>
+            Showing
+            <strong id="visibleCount">
+                {{ scans|length }}
+            </strong>
+            scan(s)
+        </span>
+
+        <span>
+            Filter results update instantly
+        </span>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         HISTORY TABLE
+    ===================================================== -->
+
+    <section class="history-card">
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Type
+                        </th>
+
+                        <th>
+                            Content
+                        </th>
+
+                        <th>
+                            Result
+                        </th>
+
+                        <th>
+                            Risk Score
+                        </th>
+
+                        <th>
+                            Threat Level
+                        </th>
+
+                        <th>
+                            Scanned At
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="historyTableBody">
+
+
+                    {% for scan in scans %}
+
+                    <tr
+                        class="scan-row"
+
+                        data-type="{{ scan['scan_type'] }}"
+
+                        data-threat="{{ scan['threat_level'] }}"
+
+                        data-content="{{ scan['content']|lower }}"
+
+                        data-result="{{ scan['result']|lower }}"
+                    >
+
+
+                        <!-- TYPE -->
+
+                        <td>
+
+                            {% if scan["scan_type"] == "URL" %}
+
+                                <span class="type-badge url-type">
+                                    🔗 URL
+                                </span>
+
+                            {% else %}
+
+                                <span class="type-badge message-type">
+                                    💬 MESSAGE
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CONTENT -->
+
+                        <td>
+
+                            <div
+                                class="content-cell"
+                                title="{{ scan['content'] }}"
+                            >
+
+                                {{ scan["content"] }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- RESULT -->
+
+                        <td>
+
+                            {% if
+                                "PHISHING" in scan["result"]
+                                or
+                                "SCAM" in scan["result"]
+                                or
+                                "SPAM" in scan["result"]
+                            %}
+
+                                <span class="result phishing">
+                                    🚨 {{ scan["result"] }}
+                                </span>
+
+                            {% elif "SUSPICIOUS" in scan["result"] %}
+
+                                <span class="result suspicious">
+                                    ⚠️ {{ scan["result"] }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="result safe">
+                                    ✅ {{ scan["result"] }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- RISK SCORE -->
+
+                        <td>
+
+                            <div class="risk-wrapper">
+
+                                <span class="risk-value">
+
+                                    {{ "%.2f"|format(
+                                        scan["risk_score"]|float
+                                    ) }}%
+
+                                </span>
+
+
+                                <div class="risk-mini-bar">
+
+                                    <div
+                                        class="risk-mini-fill
+
+                                        {% if scan['threat_level'] == 'HIGH' %}
+                                            risk-high
+
+                                        {% elif scan['threat_level'] == 'MEDIUM' %}
+                                            risk-medium
+
+                                        {% elif scan['threat_level'] == 'LOW' %}
+                                            risk-low
+
+                                        {% else %}
+                                            risk-safe
+                                        {% endif %}"
+
+                                        style="
+                                            width:
+                                            {{ scan['risk_score']|float }}%;
+                                        "
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- THREAT LEVEL -->
+
+                        <td>
+
+                            {% if scan["threat_level"] == "HIGH" %}
+
+                                <span class="threat-badge high">
+                                    HIGH
+                                </span>
+
+                            {% elif scan["threat_level"] == "MEDIUM" %}
+
+                                <span class="threat-badge medium">
+                                    MEDIUM
+                                </span>
+
+                            {% elif scan["threat_level"] == "LOW" %}
+
+                                <span class="threat-badge low">
+                                    LOW
+                                </span>
+
+                            {% else %}
+
+                                <span class="threat-badge safe-level">
+                                    SAFE
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td class="date-cell">
+
+                            {{ scan["scanned_at"] }}
+
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+            <!-- =================================================
+                 NO FILTER RESULTS
+            ================================================== -->
+
+            <div
+                class="no-results"
+                id="noResults"
+            >
+
+                <div class="no-results-icon">
+                    🔎
+                </div>
+
+                <h3>
+                    No Matching Scans
+                </h3>
+
+                <p>
+                    Try a different search term or filter.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    {% else %}
+
+
+    <!-- =====================================================
+         EMPTY DATABASE
+    ===================================================== -->
+
+    <section class="history-card">
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                📋
+            </div>
+
+            <h3>
+                No Scan History Yet
+            </h3>
+
+            <p>
+                Scan a URL or message to start building
+                your security history.
+            </p>
+
+
+            <div class="scan-buttons">
+
+                <a
+                    href="/"
+                    class="scan-button"
+                >
+                    🔗 Scan a URL
+                </a>
+
+
+                <a
+                    href="/message"
+                    class="scan-button"
+                >
+                    💬 Scan a Message
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    {% endif %}
+
+
+</main>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+    PhishGuard AI • AI-Powered Phishing & Scam Detection
+
+</footer>
+
+
+
+<!-- =========================================================
+     SEARCH + FILTER JAVASCRIPT
+========================================================= -->
+
+{% if scans %}
+
+<script>
+
+    const searchInput =
+        document.getElementById(
+            "searchInput"
+        );
+
+
+    const filterButtons =
+        document.querySelectorAll(
+            ".filter-btn"
+        );
+
+
+    const rows =
+        document.querySelectorAll(
+            ".scan-row"
+        );
+
+
+    const visibleCount =
+        document.getElementById(
+            "visibleCount"
+        );
+
+
+    const noResults =
+        document.getElementById(
+            "noResults"
+        );
+
+
+    let currentFilter = "ALL";
+
+
+    /* =====================================================
+       APPLY FILTERS
+    ===================================================== */
+
+    function applyFilters() {
+
+        const searchText =
+            searchInput.value
+                .toLowerCase()
+                .trim();
+
+
+        let count = 0;
+
+
+        rows.forEach(
+            function(row) {
+
+                const type =
+                    row.dataset.type
+                        .toUpperCase();
+
+
+                const threat =
+                    row.dataset.threat
+                        .toUpperCase();
+
+
+                const content =
+                    row.dataset.content;
+
+
+                const result =
+                    row.dataset.result;
+
+
+                const matchesSearch =
+                    searchText === ""
+                    ||
+                    content.includes(
+                        searchText
+                    )
+                    ||
+                    result.includes(
+                        searchText
+                    );
+
+
+                let matchesFilter = true;
+
+
+                if (
+                    currentFilter === "URL"
+                    ||
+                    currentFilter === "MESSAGE"
+                ) {
+
+                    matchesFilter =
+                        type === currentFilter;
+
+                }
+
+
+                else if (
+                    currentFilter === "HIGH"
+                    ||
+                    currentFilter === "MEDIUM"
+                    ||
+                    currentFilter === "LOW"
+                    ||
+                    currentFilter === "SAFE"
+                ) {
+
+                    matchesFilter =
+                        threat === currentFilter;
+
+                }
+
+
+                const shouldShow =
+                    matchesSearch
+                    &&
+                    matchesFilter;
+
+
+                if (shouldShow) {
+
+                    row.style.display = "";
+
+                    count++;
+
+                }
+
+                else {
+
+                    row.style.display = "none";
+
+                }
+
+            }
+        );
+
+
+        visibleCount.textContent =
+            count;
+
+
+        if (count === 0) {
+
+            noResults.style.display =
+                "block";
+
+        }
+
+        else {
+
+            noResults.style.display =
+                "none";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    searchInput.addEventListener(
+        "input",
+        applyFilters
+    );
+
+
+    /* =====================================================
+       FILTER BUTTONS
+    ===================================================== */
+
+    filterButtons.forEach(
+        function(button) {
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    filterButtons.forEach(
+                        function(btn) {
+
+                            btn.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    currentFilter =
+                        button.dataset.filter;
+
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+    );
+
+</script>
+
+{% endif %}
+
+
+</body>
+
+</html>

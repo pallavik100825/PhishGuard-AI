@@ -2,7 +2,7 @@
 
 ### AI-Powered Phishing & Digital Scam Detection Platform
 
-PhishGuard AI is a machine-learning-based cybersecurity platform designed to detect phishing URLs and digital scam/spam messages.
+PhishGuard AI is a machine-learning-based cybersecurity platform designed to detect **phishing URLs and digital scam/spam messages**.
 
 The system combines **Machine Learning, Natural Language Processing (NLP), URL structural analysis, security rules, and explainable risk scoring** to help users identify suspicious digital content before interacting with it.
 
@@ -21,6 +21,22 @@ The system combines **Machine Learning, Natural Language Processing (NLP), URL s
 - 📈 **Security Analytics Dashboard**
 - 💾 **SQLite Database**
 - 🎨 **Professional Web Interface**
+
+---
+
+## 🖥️ Application Preview
+
+### 🔗 URL Scanner
+
+The URL Scanner analyzes a submitted URL using machine-learning predictions, structural URL features, and security rules.
+
+![PhishGuard AI URL Scanner](screenshots/url-scanner.png)
+
+### 💬 Message Scanner
+
+The Message Scanner analyzes message content using NLP and also checks URLs embedded inside messages.
+
+![PhishGuard AI Message Scanner](screenshots/message-scanner.png)
 
 ---
 
@@ -44,12 +60,12 @@ The system combines **Machine Learning, Natural Language Processing (NLP), URL s
 
 ```text
                     ┌─────────────────────┐
-                    │       User          │
+                    │        User         │
                     └──────────┬──────────┘
                                │
                                ▼
                     ┌─────────────────────┐
-                    │   Flask Web App     │
+                    │    Flask Web App    │
                     └──────────┬──────────┘
                                │
               ┌────────────────┴────────────────┐

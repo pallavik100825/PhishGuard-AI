@@ -91,6 +91,33 @@
             white-space: nowrap;
         }
 
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .brand-title {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .brand-ai {
+            color: #38bdf8;
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+            color: #22d3ee;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+        }
+
         .brand-icon {
             width: 34px;
             height: 34px;
@@ -177,7 +204,7 @@
 
             padding: 6px 14px;
 
-            border-radius: 9911px;
+            border-radius: 999px;
 
             background:
                 rgba(59,130,246,0.13);
@@ -773,7 +800,7 @@
 
         .reason::before {
             content: "!";
-            
+
             width: 19px;
             height: 19px;
 
@@ -1010,9 +1037,17 @@
                     🛡️
                 </div>
 
-                <span>
-                    PhishGuard AI
-                </span>
+                <div class="brand-text">
+
+                    <span class="brand-title">
+                        PhishGuard <span class="brand-ai">AI</span>
+                    </span>
+
+                    <span class="brand-subtitle">
+                        SECURITY INTELLIGENCE
+                    </span>
+
+                </div>
 
             </a>
 
@@ -1020,19 +1055,19 @@
             <div class="nav-links">
 
                 <a href="/" class="active">
-                    URL Scanner
+                    🔗 URL Scanner
                 </a>
 
                 <a href="/message">
-                    Message Scanner
+                    💬 Message Scanner
                 </a>
 
                 <a href="/history">
-                    History
+                    📋 History
                 </a>
 
                 <a href="/dashboard">
-                    Dashboard
+                    📊 Dashboard
                 </a>
 
             </div>
